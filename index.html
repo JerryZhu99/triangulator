@@ -90,9 +90,10 @@
     rangeArray.push(sensorRadius);
   }
   function reset(){
-    redoArray = rangeArray;
-    for(sensorRadius in rangeArray){
-      sensor.setMap(null);
+    for(var i=0;i<rangeArray.length;i++){
+      sensorRadius = rangeArray[i];
+      sensorRadius.setMap(null);
+      redoArray.push(sensorRadius);
     }
     rangeArray = [];
   }
@@ -117,11 +118,11 @@
       fillOpacity:0.05
     });
     sensorRadius.setMap(map);
-    setTimeout(function () {
+    setInterval(function () {
       getLocation();
       userposition.setPosition(position);
       sensorRadius.setCenter(position);
-    }, 10000);
+    }, 1000);
   }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ1AtoruZSmAVBzt2l_q59yalVJXkYyZo&callback=initMap"
