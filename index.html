@@ -13,16 +13,32 @@
   #map {
     height: 100%;
   }
+  #trackercontrols{
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+  }
+  #trackercontrols>button{
+    width: auto;
+    height: 50px;
+    padding: auto, 20px;
+    font-size: 14px;
+  }
   </style>
 </head>
 <body>
   <div id="map"></div>
-  <div id="controls" style="position:absolute;bottom:50px;left:50px">
+  <div id="trackercontrols">
     <button onclick="addInRange()">Inside Range</button>
     <button onclick="addOutRange()">Outside Range</button>
+    <button onclick="undo()">Undo</button>
+    <button onclick="redo()">Redo</button>
+    <button onclick="reset()">Reset</button>
   </div>
   <script>
   var position;
+  var rangeArray = [];
+  var redoArray = [];
   function getLocation() {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(setPosition);
@@ -45,6 +61,8 @@
       fillOpacity:0.05
     });
     sensorRadius.setMap(map);
+    rangeArray.push(sensorRadius);
+    redoArray = [];
   }
   function addOutRange(){
     getLocation();
@@ -58,6 +76,25 @@
       fillOpacity:0.05
     });
     sensorRadius.setMap(map);
+    rangeArray.push(sensorRadius);
+    redoArray = [];
+  }
+  function undo(){
+    var sensorRadius = rangeArray.pop();
+    sensorRadius.setMap(null);
+    redoArray.push(sensorRadius);
+  }
+  function redo(){
+    var sensorRadius = redoArray.pop();
+    sensorRadius.setMap(map);
+    rangeArray.push(sensorRadius);
+  }
+  function reset(){
+    redoArray = rangeArray;
+    for(sensorRadius in rangeArray){
+      sensor.setMap(null);
+    }
+    rangeArray = [];
   }
   getLocation();
   var map;
@@ -84,7 +121,7 @@
       getLocation();
       userposition.setPosition(position);
       sensorRadius.setCenter(position);
-    }, 10);
+    }, 10000);
   }
   </script>
   <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDQ1AtoruZSmAVBzt2l_q59yalVJXkYyZo&callback=initMap"
