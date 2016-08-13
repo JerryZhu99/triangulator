@@ -53,7 +53,7 @@
   };
   function getLocation() {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(setPosition,error,options);
+      navigator.geolocation.watchPosition(setPosition,error,options);
     } else {
       console.log("Geolocation is not supported by this browser.");
     }
@@ -66,7 +66,6 @@
   };
 
   function addInRange(){
-    getLocation();
     var sensorRadius = new google.maps.Circle({
       center:position,
       radius:200,
@@ -81,7 +80,6 @@
     redoArray = [];
   }
   function addOutRange(){
-    getLocation();
     var sensorRadius = new google.maps.Circle({
       center:position,
       radius:200,
@@ -141,7 +139,6 @@
     });
     sensorRadius.setMap(map);
     setInterval(function () {
-      getLocation();
       userposition.setPosition(position);
       sensorRadius.setCenter(position);
     }, 500);
